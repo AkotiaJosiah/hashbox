@@ -23,7 +23,7 @@ This opens `index.html` in your default browser.
 Clone the repository and run the startup script:
 
 ```bash
-git clone https://github.com/yourusername/hashbox.git
+git clone https://github.com/AkotiaJosiah/hashbox.git
 cd hashbox
 chmod +x start.sh
 ./start.sh
