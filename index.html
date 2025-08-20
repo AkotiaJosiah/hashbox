@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All-in-One Hashing, Encoding & Tools</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 0; }
+    header { background: linear-gradient(90deg,#1e293b,#334155); color: #fff; padding: 1.5rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,.3); }
+    h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
+    .tabs { display: flex; background: #1e293b; border-bottom: 2px solid #334155; }
+    .tab-button { flex: 1; padding: 1rem; background: none; color: #cbd5e1; border: none; cursor: pointer; font-size: 1rem; transition: all .2s; }
+    .tab-button:hover { background: #334155; color: #fff; }
+    .tab-button.active { background: #475569; color: #fff; font-weight: bold; box-shadow: inset 0 -2px 0 #38bdf8; }
+    .container { padding: 1.5rem; }
+    .tab-content { display: none; animation: fade .3s ease-in-out; }
+    .tab-content.active { display: block; }
+    textarea, input, button { width: 100%; padding: .75rem; margin: .5rem 0; border-radius: .5rem; border: none; font-size: .95rem; }
+    textarea, input { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; }
+    button { background: #38bdf8; color: #0f172a; font-weight: bold; cursor: pointer; transition: background .2s; }
+    button:hover { background: #0ea5e9; }
+    .output { background: #1e293b; border: 1px solid #334155; padding: .75rem; margin: .5rem 0; word-break: break-all; font-family: monospace; border-radius: .5rem; color: #f8fafc; }
+    .rowtight { display: flex; justify-content: space-between; align-items: center; margin-top: .75rem; padding: .25rem 0; border-bottom: 1px solid #334155; }
+    .copy { cursor: pointer; color: #38bdf8; font-size: .9rem; }
+    .copy:hover { text-decoration: underline; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>All-in-One Hashing, Encoding & Utility Toolkit</h1>
+  </header>
+  <div class="tabs">
+    <button class="tab-button active" data-tab="hashes" onclick="openTab('hashes')">Hash</button>
+    <button class="tab-button" data-tab="encode" onclick="openTab('encode')">Encode</button>
+    <button class="tab-button" data-tab="decode" onclick="openTab('decode')">Decode</button>
+    <button class="tab-button" data-tab="shortener" onclick="openTab('shortener')">Shortener</button>
+  </div>
+  <div class="container">
+    <div id="hashes" class="tab-content active">
+      <h2>Hashes</h2>
+      <textarea id="input" placeholder="Enter text to hash..." oninput="updateAll()"></textarea>
+
+      <div class="rowtight"><span><strong>MD5</strong></span><span class="copy" onclick="copyText('md5')">Copy</span></div>
+      <div id="md5" class="output"></div>
+
+      <div class="rowtight"><span><strong>SHA-1</strong></span><span class="copy" onclick="copyText('sha1')">Copy</span></div>
+      <div id="sha1" class="output"></div>
+
+      <div class="rowtight"><span><strong>SHA-256</strong></span><span class="copy" onclick="copyText('sha256')">Copy</span></div>
+      <div id="sha256" class="output"></div>
+
+      <div class="rowtight"><span><strong>SHA-384</strong></span><span class="copy" onclick="copyText('sha384')">Copy</span></div>
+      <div id="sha384" class="output"></div>
+
+      <div class="rowtight"><span><strong>SHA-512</strong></span><span class="copy" onclick="copyText('sha512')">Copy</span></div>
+      <div id="sha512" class="output"></div>
+
+      <h3>HMAC (SHA-256)</h3>
+      <input type="text" id="hmac-key" placeholder="Enter key..." />
+      <button onclick="computeHmac()">Compute HMAC</button>
+      <div id="hmac-output" class="output"></div>
+    </div>
+
+    <div id="encode" class="tab-content">
+      <h2>Encoding</h2>
+      <textarea id="encode-input" placeholder="Enter text to encode..." oninput="updateAll()"></textarea>
+
+      <div class="rowtight"><span><strong>Base64</strong></span><span class="copy" onclick="copyText('b64')">Copy</span></div>
+      <div id="b64" class="output"></div>
+
+      <div class="rowtight"><span><strong>URL Encode</strong></span><span class="copy" onclick="copyText('urlenc')">Copy</span></div>
+      <div id="urlenc" class="output"></div>
+
+      <div class="rowtight"><span><strong>Hex Encode</strong></span><span class="copy" onclick="copyText('hexenc')">Copy</span></div>
+      <div id="hexenc" class="output"></div>
+    </div>
+
+    <div id="decode" class="tab-content">
+      <h2>Decoding</h2>
+      <textarea id="decode-input" placeholder="Enter text to decode..." oninput="updateAll()"></textarea>
+
+      <div class="rowtight"><span><strong>Base64 Decode</strong></span><span class="copy" onclick="copyText('b64dec')">Copy</span></div>
+      <div id="b64dec" class="output"></div>
+
+      <div class="rowtight"><span><strong>URL Decode</strong></span><span class="copy" onclick="copyText('urldec')">Copy</span></div>
+      <div id="urldec" class="output"></div>
+
+      <div class="rowtight"><span><strong>Hex Decode</strong></span><span class="copy" onclick="copyText('hexdec')">Copy</span></div>
+      <div id="hexdec" class="output"></div>
+    </div>
+
+    <div id="shortener" class="tab-content">
+      <h2>URL Shortener</h2>
+      <input type="text" id="long-url" placeholder="Enter long URL..." />
+      <button onclick="shortenUrl()">Shorten</button>
+      <div id="short-url" class="output"></div>
+    </div>
+  </div>
+
+  <script>
+    function openTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+    }
+
+    async function digestMessage(algorithm, message) {
+      const msgUint8 = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest(algorithm, msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const hashOutputs = [
+      { id: 'md5', fn: s => SparkMD5.hash(s) },
+      { id: 'sha1', fn: s => digestMessage('SHA-1', s) },
+      { id: 'sha256', fn: s => digestMessage('SHA-256', s) },
+      { id: 'sha384', fn: s => digestMessage('SHA-384', s) },
+      { id: 'sha512', fn: s => digestMessage('SHA-512', s) },
+    ];
+
+    const encodeOutputs = [
+      { id: 'b64', fn: s => btoa(unescape(encodeURIComponent(s))) },
+      { id: 'urlenc', fn: s => encodeURIComponent(s) },
+      { id: 'hexenc', fn: s => Array.from(new TextEncoder().encode(s)).map(b => b.toString(16).padStart(2,'0')).join('') },
+    ];
+
+    const decodeOutputs = [
+      { id: 'b64dec', fn: s => { try { return atob(s); } catch { return ''; } } },
+      { id: 'urldec', fn: s => { try { return decodeURIComponent(s); } catch { return ''; } } },
+      { id: 'hexdec', fn: s => { try { return new TextDecoder().decode(Uint8Array.from(s.match(/.{1,2}/g).map(b => parseInt(b,16)))); } catch { return ''; } } },
+    ];
+
+    async function updateAll() {
+      const inputVal = document.querySelector('#input')?.value.trim() || '';
+      const encodeVal = document.querySelector('#encode-input')?.value.trim() || '';
+      const decodeVal = document.querySelector('#decode-input')?.value.trim() || '';
+
+      // Hashes
+      if (inputVal) {
+        for (const o of hashOutputs) {
+          const el = document.getElementById(o.id);
+          try { el.textContent = await o.fn(inputVal); } catch (e) { el.textContent = '⚠️ ' + e.message; }
+        }
+      } else {
+        hashOutputs.forEach(o => document.getElementById(o.id).textContent = '');
+      }
+
+      // Encode
+      if (encodeVal) {
+        for (const o of encodeOutputs) {
+          const el = document.getElementById(o.id);
+          try { el.textContent = o.fn(encodeVal); } catch (e) { el.textContent = '⚠️ ' + e.message; }
+        }
+      } else {
+        encodeOutputs.forEach(o => document.getElementById(o.id).textContent = '');
+      }
+
+      // Decode
+      if (decodeVal) {
+        for (const o of decodeOutputs) {
+          const el = document.getElementById(o.id);
+          try { el.textContent = o.fn(decodeVal); } catch (e) { el.textContent = '⚠️ ' + e.message; }
+        }
+      } else {
+        decodeOutputs.forEach(o => document.getElementById(o.id).textContent = '');
+      }
+    }
+
+    async function computeHmac() {
+      const key = document.getElementById('hmac-key').value;
+      const msg = document.getElementById('input').value;
+      if (!key || !msg) { document.getElementById('hmac-output').textContent = ''; return; }
+      const enc = new TextEncoder();
+      const keyObj = await crypto.subtle.importKey('raw', enc.encode(key), {name: 'HMAC', hash: 'SHA-256'}, false, ['sign']);
+      const sig = await crypto.subtle.sign('HMAC', keyObj, enc.encode(msg));
+      const hashArray = Array.from(new Uint8Array(sig));
+      const hex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      document.getElementById('hmac-output').textContent = hex;
+    }
+
+    function copyText(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.textContent || '');
+    }
+
+    async function shortenUrl() {
+      const longUrl = document.getElementById('long-url').value.trim();
+      if (!longUrl) { document.getElementById('short-url').textContent = ''; return; }
+      try {
+        const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+        const short = await res.text();
+        document.getElementById('short-url').textContent = short;
+      } catch (e) {
+        document.getElementById('short-url').textContent = '⚠️ Error shortening URL';
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js"></script>
+</body>
+</html>
